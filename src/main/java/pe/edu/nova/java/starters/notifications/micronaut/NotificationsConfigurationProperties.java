@@ -22,8 +22,10 @@ import java.time.Duration;
  * with {@code new NotificationsConfigurationProperties()} and then populate
  * each channel via its {@code setX(...)} methods; Micronaut runtime wires the
  * nested configs via constructor injection (see
- * {@link pe.edu.nova.java.starters.notifications.micronaut.MicronautExtensionIntegrationTest}
- * for the integration test that exercises the runtime path).
+ * {@code MicronautExtensionIntegrationTest} in the test source set for the
+ * integration test that exercises the runtime path; javadoc references the
+ * test class by name to avoid linking to a symbol that is not on the
+ * production classpath).
  */
 @ConfigurationProperties("nova.notifications")
 public class NotificationsConfigurationProperties {
