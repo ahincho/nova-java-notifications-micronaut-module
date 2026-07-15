@@ -115,7 +115,7 @@ publishing {
                     "that bridges nova-notifications (framework-agnostic, pe.edu.nova.java.libs) " +
                     "with Micronaut. Exposes NotificationConfiguration and NotificationFacade as " +
                     "Micronaut beans, configurable via @ConfigurationProperties under " +
-                    "galaxy-training.notifications.*"
+                    "nova.notifications.*"
                 )
                 url.set("https://github.com/ahincho/nova-java-notifications-micronaut-module")
                 licenses {
