@@ -1,0 +1,243 @@
+package pe.edu.nova.java.starters.notifications.micronaut;
+
+import io.micronaut.context.annotation.ConfigurationProperties;
+import java.time.Duration;
+
+/**
+ * Micronaut configuration properties for the notifications module.
+ *
+ * <p>Maps the {@code galaxy-training.notifications.*} properties from
+ * {@code application.yml} or {@code application.properties} (kept
+ * consistent with the Spring Boot starter and Quarkus extension).
+ *
+ * <p>Per Micronaut convention, the bean is a record with
+ * {@code @ConfigurationProperties} and has a public no-arg constructor
+ * (implicit in records) plus getters that Micronaut uses to inject values.
+ */
+@ConfigurationProperties("galaxy-training.notifications")
+public class NotificationsConfigurationProperties {
+
+    private boolean enabled = true;
+    private Email email = new Email();
+    private Sms sms = new Sms();
+    private Push push = new Push();
+    private Slack slack = new Slack();
+    private Resilience resilience = new Resilience();
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Email getEmail() {
+        return email;
+    }
+
+    public void setEmail(Email email) {
+        this.email = email;
+    }
+
+    public Sms getSms() {
+        return sms;
+    }
+
+    public void setSms(Sms sms) {
+        this.sms = sms;
+    }
+
+    public Push getPush() {
+        return push;
+    }
+
+    public void setPush(Push push) {
+        this.push = push;
+    }
+
+    public Slack getSlack() {
+        return slack;
+    }
+
+    public void setSlack(Slack slack) {
+        this.slack = slack;
+    }
+
+    public Resilience getResilience() {
+        return resilience;
+    }
+
+    public void setResilience(Resilience resilience) {
+        this.resilience = resilience;
+    }
+
+    public static class Email {
+        private String provider;
+        private String apiKey;
+        private String defaultSender;
+
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getApiKey() {
+            return apiKey;
+        }
+
+        public void setApiKey(String apiKey) {
+            this.apiKey = apiKey;
+        }
+
+        public String getDefaultSender() {
+            return defaultSender;
+        }
+
+        public void setDefaultSender(String defaultSender) {
+            this.defaultSender = defaultSender;
+        }
+    }
+
+    public static class Sms {
+        private String provider = "twilio";
+        private String accountSid;
+        private String authToken;
+        private String fromNumber;
+
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getAccountSid() {
+            return accountSid;
+        }
+
+        public void setAccountSid(String accountSid) {
+            this.accountSid = accountSid;
+        }
+
+        public String getAuthToken() {
+            return authToken;
+        }
+
+        public void setAuthToken(String authToken) {
+            this.authToken = authToken;
+        }
+
+        public String getFromNumber() {
+            return fromNumber;
+        }
+
+        public void setFromNumber(String fromNumber) {
+            this.fromNumber = fromNumber;
+        }
+    }
+
+    public static class Push {
+        private String provider = "firebase";
+        private String projectId;
+        private String serverKey;
+
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getProjectId() {
+            return projectId;
+        }
+
+        public void setProjectId(String projectId) {
+            this.projectId = projectId;
+        }
+
+        public String getServerKey() {
+            return serverKey;
+        }
+
+        public void setServerKey(String serverKey) {
+            this.serverKey = serverKey;
+        }
+    }
+
+    public static class Slack {
+        private String defaultWebhookUrl;
+
+        public String getDefaultWebhookUrl() {
+            return defaultWebhookUrl;
+        }
+
+        public void setDefaultWebhookUrl(String defaultWebhookUrl) {
+            this.defaultWebhookUrl = defaultWebhookUrl;
+        }
+    }
+
+    public static class Resilience {
+        private int maxAttempts = 3;
+        private long initialBackoffMillis = 200;
+        private int circuitFailureThreshold = 5;
+        private long circuitOpenDurationSeconds = 30;
+        private int rateLimitPermitsPerSecond = 0;
+
+        public int getMaxAttempts() {
+            return maxAttempts;
+        }
+
+        public void setMaxAttempts(int maxAttempts) {
+            this.maxAttempts = maxAttempts;
+        }
+
+        public long getInitialBackoffMillis() {
+            return initialBackoffMillis;
+        }
+
+        public void setInitialBackoffMillis(long initialBackoffMillis) {
+            this.initialBackoffMillis = initialBackoffMillis;
+        }
+
+        public int getCircuitFailureThreshold() {
+            return circuitFailureThreshold;
+        }
+
+        public void setCircuitFailureThreshold(int circuitFailureThreshold) {
+            this.circuitFailureThreshold = circuitFailureThreshold;
+        }
+
+        public long getCircuitOpenDurationSeconds() {
+            return circuitOpenDurationSeconds;
+        }
+
+        public void setCircuitOpenDurationSeconds(long s) {
+            this.circuitOpenDurationSeconds = s;
+        }
+
+        public int getRateLimitPermitsPerSecond() {
+            return rateLimitPermitsPerSecond;
+        }
+
+        public void setRateLimitPermitsPerSecond(int rateLimitPermitsPerSecond) {
+            this.rateLimitPermitsPerSecond = rateLimitPermitsPerSecond;
+        }
+    }
+
+    /** Hidden helper to convert millis to a {@link Duration} (used by the factory). */
+    public static Duration durationOfMillis(long millis) {
+        return Duration.ofMillis(millis);
+    }
+
+    /** Hidden helper to convert seconds to a {@link Duration}. */
+    public static Duration durationOfSeconds(long seconds) {
+        return Duration.ofSeconds(seconds);
+    }
+}
