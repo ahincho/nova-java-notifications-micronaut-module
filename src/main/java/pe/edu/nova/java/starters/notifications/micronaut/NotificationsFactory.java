@@ -5,6 +5,8 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pe.edu.nova.java.libs.notifications.application.facade.NotificationFacade;
 import pe.edu.nova.java.libs.notifications.domain.vo.EmailAddress;
 import pe.edu.nova.java.libs.notifications.domain.vo.SlackWebhookUrl;
@@ -32,6 +34,8 @@ import pe.edu.nova.java.libs.notifications.infrastructure.configuration.SmsProvi
 @Factory
 public class NotificationsFactory {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationsFactory.class);
+
     @Bean
     @Singleton
     @Primary
@@ -51,7 +55,14 @@ public class NotificationsFactory {
 
     @Bean
     @Singleton
-    public NotificationFacade notificationFacade(NotificationConfiguration configuration) {
+    public NotificationFacade notificationFacade(
+            NotificationsConfigurationProperties properties,
+            NotificationConfiguration configuration) {
+        if (!properties.isEnabled()) {
+            LOGGER.warn("Nova Notifications (Micronaut) is disabled via nova.notifications.enabled=false; "
+                    + "producing a no-op facade (every send returns FAILED with ErrorCode.DISABLED).");
+            return NotificationFacade.createDisabled();
+        }
         return NotificationFacade.create(configuration);
     }
 
@@ -62,6 +73,15 @@ public class NotificationsFactory {
     void applyConfigToBuilder(
             NotificationsConfigurationProperties properties,
             NotificationConfiguration.Builder builder) {
+        if (!properties.isEnabled()) {
+            // Library is disabled at the starter level: skip all channel
+            // assembly. The resilience config (set by the caller before this
+            // method is invoked) is kept. The corresponding
+            // {@link #notificationFacade} method returns a no-op facade so
+            // consumers can still inject {@code NotificationFacade} without
+            // a startup {@code ConfigurationException}.
+            return;
+        }
         NotificationsConfigurationProperties.Email email = properties.getEmail();
         if (email != null && allPresent(email.getProvider(), email.getApiKey(), email.getDefaultSender())) {
             builder.email(EmailConfiguration.builder()

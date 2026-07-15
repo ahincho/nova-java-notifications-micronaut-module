@@ -101,4 +101,29 @@ class MicronautModuleUnitTest {
         assertThat(resilience.retryEnabled()).isTrue();
         assertThat(resilience.rateLimitEnabled()).isFalse();
     }
+
+    @Test
+    void applyConfigToBuilderSkipsAllChannelsWhenEnabledIsFalse() {
+        NotificationsConfigurationProperties properties = new NotificationsConfigurationProperties();
+        properties.setEnabled(false);
+        // Configure all four channels: they MUST be ignored when enabled=false.
+        properties.getEmail().setProvider("sendgrid");
+        properties.getEmail().setApiKey("test-api-key");
+        properties.getEmail().setDefaultSender("noreply@example.com");
+        properties.getSms().setAccountSid("AC1");
+        properties.getSms().setAuthToken("token-1");
+        properties.getSms().setFromNumber("+15005550006");
+        properties.getPush().setProjectId("project-1");
+        properties.getPush().setServerKey("server-key-1");
+        properties.getSlack().setDefaultWebhookUrl("https://hooks.slack.com/services/T0/B0/secret");
+
+        NotificationConfiguration.Builder builder = NotificationConfiguration.builder();
+        factory.applyConfigToBuilder(properties, builder);
+        NotificationConfiguration built = builder.build();
+
+        assertThat(built.email()).isEmpty();
+        assertThat(built.sms()).isEmpty();
+        assertThat(built.push()).isEmpty();
+        assertThat(built.slack()).isEmpty();
+    }
 }
