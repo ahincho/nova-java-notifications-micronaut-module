@@ -6,15 +6,14 @@ import java.time.Duration;
 /**
  * Micronaut configuration properties for the notifications module.
  *
- * <p>Maps the {@code galaxy-training.notifications.*} properties from
- * {@code application.yml} or {@code application.properties} (kept
- * consistent with the Spring Boot starter and Quarkus extension).
- *
- * <p>Per Micronaut convention, the bean is a record with
- * {@code @ConfigurationProperties} and has a public no-arg constructor
- * (implicit in records) plus getters that Micronaut uses to inject values.
+ * <p>Maps the {@code nova.notifications.*} properties from
+ * {@code application.yml} or {@code application.properties} — same prefix
+ * as the Spring Boot starter and Quarkus extension, following the same
+ * convention as the newer Nova starters
+ * (e.g. {@code nova-observability-spring-boot-starter} uses
+ * {@code nova.observability.*}).
  */
-@ConfigurationProperties("galaxy-training.notifications")
+@ConfigurationProperties("nova.notifications")
 public class NotificationsConfigurationProperties {
 
     private boolean enabled = true;
