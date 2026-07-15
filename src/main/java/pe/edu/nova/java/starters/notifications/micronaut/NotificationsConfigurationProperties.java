@@ -1,6 +1,7 @@
 package pe.edu.nova.java.starters.notifications.micronaut;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.annotation.Introspected;
 import java.time.Duration;
 
 /**
@@ -12,6 +13,17 @@ import java.time.Duration;
  * convention as the newer Nova starters
  * (e.g. {@code nova-observability-spring-boot-starter} uses
  * {@code nova.observability.*}).
+ *
+ * <p>The outer class is bound to {@code nova.notifications.*} via the top-level
+ * {@code enabled} field. Each nested channel configuration (Email, Sms, Push,
+ * Slack, Resilience) is bound to its own relative prefix through its own
+ * {@link ConfigurationProperties} annotation. The outer class is still
+ * a POJO with default field values so unit tests can instantiate it directly
+ * with {@code new NotificationsConfigurationProperties()} and then populate
+ * each channel via its {@code setX(...)} methods; Micronaut runtime wires the
+ * nested configs via constructor injection (see
+ * {@link pe.edu.nova.java.starters.notifications.micronaut.MicronautExtensionIntegrationTest}
+ * for the integration test that exercises the runtime path).
  */
 @ConfigurationProperties("nova.notifications")
 public class NotificationsConfigurationProperties {
@@ -71,6 +83,8 @@ public class NotificationsConfigurationProperties {
         this.resilience = resilience;
     }
 
+    @ConfigurationProperties("email")
+    @Introspected
     public static class Email {
         private String provider;
         private String apiKey;
@@ -101,6 +115,8 @@ public class NotificationsConfigurationProperties {
         }
     }
 
+    @ConfigurationProperties("sms")
+    @Introspected
     public static class Sms {
         private String provider = "twilio";
         private String accountSid;
@@ -140,6 +156,8 @@ public class NotificationsConfigurationProperties {
         }
     }
 
+    @ConfigurationProperties("push")
+    @Introspected
     public static class Push {
         private String provider = "firebase";
         private String projectId;
@@ -170,6 +188,8 @@ public class NotificationsConfigurationProperties {
         }
     }
 
+    @ConfigurationProperties("slack")
+    @Introspected
     public static class Slack {
         private String defaultWebhookUrl;
 
@@ -182,6 +202,8 @@ public class NotificationsConfigurationProperties {
         }
     }
 
+    @ConfigurationProperties("resilience")
+    @Introspected
     public static class Resilience {
         private int maxAttempts = 3;
         private long initialBackoffMillis = 200;
@@ -235,7 +257,7 @@ public class NotificationsConfigurationProperties {
         return Duration.ofMillis(millis);
     }
 
-    /** Hidden helper to convert seconds to a {@link Duration}. */
+    /** Hidden helper to convert seconds to a {@link Duration} (used by the factory). */
     public static Duration durationOfSeconds(long seconds) {
         return Duration.ofSeconds(seconds);
     }

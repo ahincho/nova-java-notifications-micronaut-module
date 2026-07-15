@@ -22,6 +22,10 @@ repositories {
 }
 
 val micronautVersion = "5.0.4"
+// micronaut-test-junit5 5.0.x caps at 5.0.1 on Maven Central (test artifact
+// trails the core artifact by a few patch versions). 5.0.1 is binary-
+// compatible with the 5.0.x line used by micronaut-core 5.0.4.
+val micronautTestVersion = "5.0.1"
 val junitVersion = "6.0.0"
 val assertjVersion = "3.26.3"
 
@@ -42,7 +46,13 @@ dependencies {
     // it here makes the API contract self-contained.
     annotationProcessor("io.micronaut:micronaut-inject-java:$micronautVersion")
 
+    // The same processor on the test source set: required for @MicronautTest
+    // to generate a BeanDefinition for the test class itself (otherwise
+    // Micronaut reports "no bean definition for the test present").
+    testAnnotationProcessor("io.micronaut:micronaut-inject-java:$micronautVersion")
+
     testImplementation("io.micronaut:micronaut-inject:$micronautVersion")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:$micronautTestVersion")
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.junit.platform:junit-platform-launcher:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertjVersion")

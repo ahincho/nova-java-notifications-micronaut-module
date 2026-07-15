@@ -1,0 +1,8 @@
+nova.notifications:
+  enabled: true
+  email:
+    provider: sendgrid
+    api-key: test-api-key-micronaut-it
+    default-sender: no-reply@example.com
+  resilience:
+    max-attempts: 1

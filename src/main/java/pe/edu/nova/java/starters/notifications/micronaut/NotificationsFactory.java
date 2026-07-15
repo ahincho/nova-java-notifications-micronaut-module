@@ -91,7 +91,8 @@ public class NotificationsFactory {
                     .build());
         }
         if (properties.getSms() != null
-                && allPresent(properties.getSms().getAccountSid(), properties.getSms().getAuthToken(), properties.getSms().getFromNumber())) {
+                && allPresent(properties.getSms().getAccountSid(), properties.getSms().getAuthToken(),
+                        properties.getSms().getFromNumber())) {
             builder.sms(SmsConfiguration.builder()
                     .provider(SmsProvider.valueOf(properties.getSms().getProvider().toUpperCase()))
                     .accountSid(properties.getSms().getAccountSid())
